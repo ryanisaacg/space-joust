@@ -67,14 +67,10 @@ tile tl_first_rect(tilemap m, rect r) {
 }
 
 vec tl_slide(tilemap m, rect r, vec v) {
-	r.x += v.x;
-	r.y += v.y;
-	if(tl_first_rect(m, r) == 0) 
-		return v;
-	while(vec_len2(v) > 1) {
-		v = vec_scale(v, 0.75f);
-		if(tl_first_rect(m, r) == 0) 
+	while(vec_len2(v) >= 1) {
+		if(!tl_first(m, r.x + v.x, r.y + v.y, r.width, r.height)) 
 			return v;
+		v = vec_scale(v, 0.75f);
 	}
 	return (vec){0, 0};
 }
