@@ -1,0 +1,6 @@
+#!/bin/sh
+CFLAGS=" -Wall -Wextra -Werror -Wfatal-errors -I/usr/local/include/SDL2 -I/usr/include/SDL2"
+LFLAGS=" -lSDL2_gpu `sdl2-config --static-libs` -lGL"
+
+gcc *.c $CFLAGS -c
+gcc *.o $LFLAGS -o game
