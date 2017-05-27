@@ -27,7 +27,8 @@ typedef int* tilemap;
 #define TL_HEIGHT(m) m[3]
 #define TL_TILE_WIDTH(m) m[0]
 #define TL_TILE_HEIGHT(m) m[1]
-
+//Initialize and create a tilemap
+tilemap tl_init(int width, int height, int tl_width, int tl_height, int *buffer);
 //Get the value at the index of the tilemap
 tile tl_get(tilemap m, int x, int y);
 //Set the value at the index of the tilemap

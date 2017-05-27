@@ -26,6 +26,14 @@ inline static int tl_index(tilemap map, int x, int y) {
 	return x * TL_TILE_HEIGHT(map) + y + 4;
 }
 
+tilemap tl_init(int width, int height, int tl_width, int tl_height, int *buffer) {	
+	TL_WIDTH(buffer) = width;
+	TL_HEIGHT(buffer) = height;
+	TL_TILE_WIDTH(buffer) = tl_width;
+	TL_TILE_HEIGHT(buffer) = tl_height;
+	return buffer;
+}
+
 tile tl_get (tilemap map, int x, int y) {
 	if(VALID) return map[tl_index(map, x, y)];
 	else return -1;
