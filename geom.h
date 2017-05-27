@@ -4,11 +4,15 @@ typedef struct {
 	float x, y;
 } vec;
 
+float vec_len(vec);
+float vec_len2(vec);
+vec vec_scale(vec, float);
+
 typedef struct {
 	float x, y, width, height;
 } rect;
 
-_Bool overlaps_rect(rect a, rect b);
+_Bool rect_overlaps(rect a, rect b);
 
 
 typedef int tile;

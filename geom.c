@@ -1,6 +1,20 @@
 #include "geom.h"
 
-_Bool overlaps_rect(rect a, rect b) {
+#include <math.h>
+
+float vec_len(vec v) {
+	return sqrt(vec_len2(v));
+}
+
+float vec_len2(vec v) {
+	return v.x * v.x + v.y * v.y;
+}
+
+vec vec_scale(vec v, float s) {
+	return {v.x * s, v.y * s};
+}
+
+_Bool rect_overlaps(rect a, rect b) {
 	return a.x < b.x + b.width && a.x + a.width > b.x && a.y < b.y + b.height && a.y + a.height > b.y;
 }
 
