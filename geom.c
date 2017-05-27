@@ -11,7 +11,7 @@ float vec_len2(vec v) {
 }
 
 vec vec_scale(vec v, float s) {
-	return {v.x * s, v.y * s};
+	return (vec){v.x * s, v.y * s};
 }
 
 _Bool rect_overlaps(rect a, rect b) {
@@ -66,5 +66,5 @@ vec tl_slide(tilemap m, rect r, vec v) {
 		if(tl_first_rect(m, r) == 0) 
 			return v;
 	}
-	return {0, 0};
+	return (vec){0, 0};
 }
