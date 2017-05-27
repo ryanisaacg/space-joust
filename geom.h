@@ -27,12 +27,13 @@ typedef int* tilemap;
 #define TL_HEIGHT(m) m[3]
 #define TL_TILE_WIDTH(m) m[0]
 #define TL_TILE_HEIGHT(m) m[1]
+
 //Get the value at the index of the tilemap
 tile tl_get(tilemap m, int x, int y);
 //Set the value at the index of the tilemap
 void tl_set(tilemap m, int x, int y, tile val);
 //Get the first value found within the square
-tile tl_first(tilemap m, int x, int y, int w, int h);
+tile tl_first(tilemap m, float x, float y, float w, float h);
 tile tl_first_rect(tilemap, rect);
 //Get the max amount a rect can move with a velocity
 vec tl_slide(tilemap, rect, vec);
