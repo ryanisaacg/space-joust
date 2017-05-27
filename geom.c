@@ -1,5 +1,6 @@
 #include "geom.h"
 
+#include <string.h>
 #include <math.h>
 
 float vec_len(vec v) {
@@ -27,6 +28,7 @@ inline static int tl_index(tilemap map, int x, int y) {
 }
 
 tilemap tl_init(int width, int height, int tl_width, int tl_height, int *buffer) {	
+	memset(buffer, 0, 4 + width / tl_width * height / tl_height);
 	TL_WIDTH(buffer) = width;
 	TL_HEIGHT(buffer) = height;
 	TL_TILE_WIDTH(buffer) = tl_width;
