@@ -34,3 +34,5 @@ void tl_set(tilemap m, int x, int y, tile val);
 //Get the first value found within the square
 tile tl_first(tilemap m, int x, int y, int w, int h);
 tile tl_first_rect(tilemap, rect);
+//Get the max amount a rect can move with a velocity
+vec tl_slide(tilemap, rect, vec);

@@ -35,11 +35,11 @@ void tl_set (tilemap map, int x, int y, tile val) {
 	if(VALID) map[tl_index(map, x, y)] = val;
 }
 
-tile tl_first (tilemap map, int x, int y, int w, int h) {
-	int left = x / TL_TILE_WIDTH(map);
-	int top = y / TL_TILE_HEIGHT(map);
-	int right = (x + w) / TL_TILE_WIDTH(map);
-	int bottom = (y + h) / TL_TILE_HEIGHT(map);
+tile tl_first (tilemap map, float x, float y, float w, float h) {
+	int left = (int)floor(x / TL_TILE_WIDTH(map));
+	int top = (int)floor(y / TL_TILE_HEIGHT(map));
+	int right = (int)ceil((x + w) / TL_TILE_WIDTH(map));
+	int bottom = (int)ceil((y + h) / TL_TILE_HEIGHT(map));
 	if(left < 0 || top < 0 || right > TL_WIDTH(map) / TL_TILE_WIDTH(map) || bottom > TL_HEIGHT(map) / TL_TILE_HEIGHT(map))
 		return -1;
 	for(int i = left; i <= right; i++) {
@@ -53,5 +53,18 @@ tile tl_first (tilemap map, int x, int y, int w, int h) {
 }
 
 tile tl_first_rect(tilemap m, rect r) {
-	return tl_first(m, (int)r.x, (int)r.y, (int)r.width, (int)r.height);
+	return tl_first(m, r.x, r.y, r.width, r.height);
+}
+
+vec tl_slide(tilemap m, rect r, vec v) {
+	r.x += v.x;
+	r.y += v.y;
+	if(tl_first_rect(m, r) == 0) 
+		return v;
+	while(vec_len2(v) > 1) {
+		v = vec_scale(v, 0.75f);
+		if(tl_first_rect(m, r) == 0) 
+			return v;
+	}
+	return {0, 0};
 }
