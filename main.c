@@ -1,15 +1,12 @@
-#include <SDL_gpu.h>
-
+#include "au.h"
 #include "game.h"
 
 #undef main
 int main() {
-	GPU_Target *screen = GPU_Init(800, 600, GPU_DEFAULT_INIT_FLAGS);
-	if(!screen)
-		return -1;
+	AU_Engine* eng = au_init("Space Joust", 800, 600);
 
-	game_loop(screen);
+	game_loop(eng);
 
-	GPU_Quit();
+	au_quit(eng);
 	return 0;
 }

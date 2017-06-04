@@ -1,5 +1,5 @@
 #pragma once
 
-#include <SDL_gpu.h>
+#include "au.h"
 
-void game_loop(GPU_Target *target);
+void game_loop(AU_Engine*);
