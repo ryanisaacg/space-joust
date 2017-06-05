@@ -1,17 +1,21 @@
 #include "au.h"
 
 #include <stdbool.h>
+#include <stdio.h>
 
 typedef struct {
 	AU_Rectangle bounds;
 	AU_Vector speed, acceleration;
+	int charge_time;
 } Character;
 
 void game_loop(AU_Engine* eng) {
 
-	Character player = {{0, 0, 32, 32}, {0, 0}, {0, 0}};
+	Character player = {{1, 1, 32, 32}, {0, 0}, {0, 0}, 0};
 
 	AU_Texture player_tex = au_load_texture(eng, "../player.png");
+
+	AU_Tilemap map = au_tmap_init(800, 600, 32, 32);
 
 	while (eng->should_continue) {
 		au_begin(eng);
@@ -33,7 +37,9 @@ void game_loop(AU_Engine* eng) {
 			player.acceleration.x += 0.1;
 		}
 
-		player.speed = au_geom_vec_cmp_clamp(au_geom_vec_add(player.speed, player.acceleration), -8, 8);
+		player.speed = au_tmap_slide(map, player.bounds,
+									 au_geom_vec_cmp_clamp(au_geom_vec_add(player.speed, player.acceleration), -8, 8));
+
 		if (au_geom_vec_len2(player.acceleration) == 0) {
 			if (au_geom_vec_len2(player.speed) < 2.0f) {
 				player.speed = (AU_Vector) {
