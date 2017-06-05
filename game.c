@@ -46,7 +46,7 @@ void game_loop(AU_Engine* eng) {
 					0, 0
 				};
 			} else {
-				au_geom_vec_scl(player.speed, 0.5f);
+				player.speed = au_geom_vec_scl(player.speed, 0.9f);
 			}
 		}
 		player.bounds.x += player.speed.x;
