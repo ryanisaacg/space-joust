@@ -41,9 +41,7 @@ void game_loop(AU_Engine* eng) {
 			player.acceleration.x += accel;
 		}
 
-		player.speed = au_tmap_slide(map, player.bounds,
-									 au_geom_vec_cmp_clamp(
-									 au_geom_vec_add(player.speed,
+		player.speed = au_tmap_slide(map, player.bounds, au_geom_vec_cmp_clamp(au_geom_vec_add(player.speed,
 									 player.acceleration), -max_speed, max_speed));
 
 		if (au_geom_vec_len2(player.acceleration) == 0) {
@@ -60,9 +58,9 @@ void game_loop(AU_Engine* eng) {
 
 		au_draw_texture(eng, player_tex, player.bounds.x, player.bounds.y, player.bounds.width, player.bounds.height);
 
-		for(int x = 0; x < 800; x += 32) {
-			for(int y = 0; y < 600; y += 32) {
-				if(au_tmap_get(map, x, y)) {
+		for (int x = 0; x < 800; x += 32) {
+			for (int y = 0; y < 600; y += 32) {
+				if (au_tmap_get(map, x, y)) {
 					au_draw_texture(eng, player_tex, x, y, 32, 32);
 				}
 			}
