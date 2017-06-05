@@ -19,28 +19,22 @@ void game_loop(AU_Engine* eng) {
 		player.acceleration = (AU_Vector) {
 			0, 0
 		};
-		bool moving = false;
 		//Keyboard controls
 		if (eng->current_keys[SDL_SCANCODE_W]) {
 			player.acceleration.y -= 0.1;
-			moving = true;
 		}
 		if (eng->current_keys[SDL_SCANCODE_S]) {
 			player.acceleration.y += 0.1;
-			moving = true;
 		}
 		if (eng->current_keys[SDL_SCANCODE_A]) {
 			player.acceleration.x -= 0.1;
-			moving = true;
 		}
 		if (eng->current_keys[SDL_SCANCODE_D]) {
 			player.acceleration.x += 0.1;
-			moving = true;
 		}
 
-		player.speed = au_geom_vec_add(player.speed, player.acceleration);
-		player.speed = au_geom_vec_cmp_clamp(player.speed, -8, 8);
-		if (!moving) {
+		player.speed = au_geom_vec_cmp_clamp(au_geom_vec_add(player.speed, player.acceleration), -8, 8);
+		if (au_geom_vec_len2(player.acceleration) == 0) {
 			if (au_geom_vec_len2(player.speed) < 2.0f) {
 				player.speed = (AU_Vector) {
 					0, 0
