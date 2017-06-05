@@ -15,7 +15,8 @@ void game_loop(AU_Engine* eng) {
 
 	AU_Texture player_tex = au_load_texture(eng, "../player.png");
 
-	AU_Tilemap map = au_tmap_init(800, 600, 32, 32);
+	AU_Tilemap map = au_tmap_init(800, 608, 32, 32);
+	au_tmap_set(map, 128, 128, 5);
 
 	while (eng->should_continue) {
 		au_begin(eng);
@@ -54,6 +55,13 @@ void game_loop(AU_Engine* eng) {
 
 		au_draw_texture(eng, player_tex, player.bounds.x, player.bounds.y, player.bounds.width, player.bounds.height);
 
+		for(int x = 0; x < 800; x += 32) {
+			for(int y = 0; y < 600; y += 32) {
+				if(au_tmap_get(map, x, y)) {
+					au_draw_texture(eng, player_tex, x, y, 32, 32);
+				}
+			}
+		}
 		au_end(eng);
 	}
 }
