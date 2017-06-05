@@ -18,6 +18,9 @@ void game_loop(AU_Engine* eng) {
 	AU_Tilemap map = au_tmap_init(800, 608, 32, 32);
 	au_tmap_set(map, 128, 128, 5);
 
+	const float max_speed = 3;
+	const float accel = 0.5;
+
 	while (eng->should_continue) {
 		au_begin(eng);
 
@@ -26,20 +29,22 @@ void game_loop(AU_Engine* eng) {
 		};
 		//Keyboard controls
 		if (eng->current_keys[SDL_SCANCODE_W]) {
-			player.acceleration.y -= 0.1;
+			player.acceleration.y -= accel;
 		}
 		if (eng->current_keys[SDL_SCANCODE_S]) {
-			player.acceleration.y += 0.1;
+			player.acceleration.y += accel;
 		}
 		if (eng->current_keys[SDL_SCANCODE_A]) {
-			player.acceleration.x -= 0.1;
+			player.acceleration.x -= accel;
 		}
 		if (eng->current_keys[SDL_SCANCODE_D]) {
-			player.acceleration.x += 0.1;
+			player.acceleration.x += accel;
 		}
 
 		player.speed = au_tmap_slide(map, player.bounds,
-									 au_geom_vec_cmp_clamp(au_geom_vec_add(player.speed, player.acceleration), -8, 8));
+									 au_geom_vec_cmp_clamp(
+									 au_geom_vec_add(player.speed,
+									 player.acceleration), -max_speed, max_speed));
 
 		if (au_geom_vec_len2(player.acceleration) == 0) {
 			if (au_geom_vec_len2(player.speed) < 2.0f) {
