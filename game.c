@@ -20,7 +20,7 @@ void game_loop(AU_Engine* eng) {
 
 	const float max_speed = 3;
 	const float accel = 0.5;
-	const int charge_time = 15;
+	const int charge_time = 30;
 
 	while (eng->should_continue) {
 		au_begin(eng);
@@ -50,21 +50,32 @@ void game_loop(AU_Engine* eng) {
 		player.speed =  au_geom_vec_cmp_clamp(au_geom_vec_add(player.speed, player.acceleration), -max_speed, max_speed);
 
 		if (player.charge_time > 0) {
-			player.speed.x = 4 * max_speed * player.facing;
-			player.charge_time--;
+			if (player.charge_time > charge_time / 2) {
+				player.speed.x = 4 * max_speed * player.facing;
+				player.charge_time--;
+			} else {
+				float progress = (float)player.charge_time / (5 * charge_time);
+				printf("%f\n", progress);
+				float bound = (1 - progress) * (player.speed.x - max_speed) + max_speed;
+				au_util_clamp(player.speed.x, -bound, bound);
+				player.charge_time--;
+				if (player.charge_time == 0) {
+					player.speed.x = 0;
+				}
+			}
+		} else {
+			if (au_geom_vec_len2(player.acceleration) == 0) {
+				if (au_geom_vec_len2(player.speed) < 2.0f) {
+					player.speed = (AU_Vector) {
+						0, 0
+					};
+				} else {
+					player.speed = au_geom_vec_scl(player.speed, 0.9f);
+				}
+			}
 		}
 
 		player.speed = au_tmap_slide(map, player.bounds, player.speed);
-
-		if (au_geom_vec_len2(player.acceleration) == 0) {
-			if (au_geom_vec_len2(player.speed) < 2.0f) {
-				player.speed = (AU_Vector) {
-					0, 0
-				};
-			} else {
-				player.speed = au_geom_vec_scl(player.speed, 0.9f);
-			}
-		}
 		player.bounds.x += player.speed.x;
 		player.bounds.y += player.speed.y;
 
