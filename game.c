@@ -43,13 +43,13 @@ void game_loop(AU_Engine* eng) {
 			player.acceleration.x += accel;
 			player.facing = 1;
 		}
-		if(eng->current_keys[SDL_SCANCODE_SPACE] && player.charge_time <= 0) {
+		if (eng->current_keys[SDL_SCANCODE_SPACE] && player.charge_time <= 0) {
 			player.charge_time = charge_time;
 		}
 
 		player.speed =  au_geom_vec_cmp_clamp(au_geom_vec_add(player.speed, player.acceleration), -max_speed, max_speed);
 
-		if(player.charge_time > 0) {
+		if (player.charge_time > 0) {
 			player.speed.x = 4 * max_speed * player.facing;
 			player.charge_time--;
 		}
