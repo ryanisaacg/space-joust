@@ -6,12 +6,12 @@
 typedef struct {
 	AU_Rectangle bounds;
 	AU_Vector speed, acceleration;
-	int charge_time;
+	int charge_time, facing;
 } Character;
 
 void game_loop(AU_Engine* eng) {
 
-	Character player = {{1, 1, 32, 32}, {0, 0}, {0, 0}, 0};
+	Character player = {{1, 1, 32, 32}, {0, 0}, {0, 0}, 0, 1};
 
 	AU_Texture player_tex = au_load_texture(eng, "../player.png");
 
@@ -20,6 +20,7 @@ void game_loop(AU_Engine* eng) {
 
 	const float max_speed = 3;
 	const float accel = 0.5;
+	const int charge_time = 15;
 
 	while (eng->should_continue) {
 		au_begin(eng);
@@ -36,13 +37,24 @@ void game_loop(AU_Engine* eng) {
 		}
 		if (eng->current_keys[SDL_SCANCODE_A]) {
 			player.acceleration.x -= accel;
+			player.facing = -1;
 		}
 		if (eng->current_keys[SDL_SCANCODE_D]) {
 			player.acceleration.x += accel;
+			player.facing = 1;
+		}
+		if(eng->current_keys[SDL_SCANCODE_SPACE] && player.charge_time <= 0) {
+			player.charge_time = charge_time;
 		}
 
-		player.speed = au_tmap_slide(map, player.bounds, au_geom_vec_cmp_clamp(au_geom_vec_add(player.speed,
-									 player.acceleration), -max_speed, max_speed));
+		player.speed =  au_geom_vec_cmp_clamp(au_geom_vec_add(player.speed, player.acceleration), -max_speed, max_speed);
+
+		if(player.charge_time > 0) {
+			player.speed.x = 4 * max_speed * player.facing;
+			player.charge_time--;
+		}
+
+		player.speed = au_tmap_slide(map, player.bounds, player.speed);
 
 		if (au_geom_vec_len2(player.acceleration) == 0) {
 			if (au_geom_vec_len2(player.speed) < 2.0f) {
