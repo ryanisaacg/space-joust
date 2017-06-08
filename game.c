@@ -47,6 +47,7 @@ void game_loop(AU_Engine* eng) {
 			player.charge_time = charge_time;
 		}
 
+		//Movement code
 		player.speed =  au_geom_vec_cmp_clamp(au_geom_vec_add(player.speed, player.acceleration), -max_speed, max_speed);
 
 		if (player.charge_time > 0) {
@@ -78,6 +79,8 @@ void game_loop(AU_Engine* eng) {
 		player.speed = au_tmap_slide(map, player.bounds, player.speed);
 		player.bounds.x += player.speed.x;
 		player.bounds.y += player.speed.y;
+
+		//Draw code
 
 		au_draw_texture_rect(eng, player_tex, player.bounds);
 
