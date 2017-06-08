@@ -84,7 +84,7 @@ void game_loop(AU_Engine* eng) {
 		for (int x = 0; x < 800; x += 32) {
 			for (int y = 0; y < 600; y += 32) {
 				if (au_tmap_get(map, x, y)) {
-					au_draw_texture(eng, player_tex, x, y, 32, 32);
+					au_draw_texture_rect(eng, player_tex, player.bounds);
 				}
 			}
 		}
