@@ -9,12 +9,13 @@ typedef struct {
 	int charge_time, facing;
 } Character;
 
+const int charge_time = 30;
+
 static Character apply_controls(AU_Engine* eng, Character player, AU_Tilemap map,
 		int left, int right, int up, int down, int charge) {
 
 	const float max_speed = 3;
 	const float accel = 0.5;
-	const int charge_time = 30;
 
 	player.acceleration = (AU_Vector) {
 		0, 0
@@ -78,6 +79,10 @@ void game_loop(AU_Engine* eng) {
 	Character player1 = {{1, 1, 32, 32}, {0, 0}, {0, 0}, 0, 1};
 	Character player2 = {{500, 500, 32, 32}, {0, 0}, {0, 0}, 0, 1};
 
+	int score1 = 0;
+	int score2 = 0;
+	int restart_timer = -1;
+
 	AU_Texture player_tex = au_load_texture(eng, "../player.png");
 
 	AU_Tilemap map = au_tmap_init(800, 608, 32, 32);
@@ -85,11 +90,33 @@ void game_loop(AU_Engine* eng) {
 
 	while (eng->should_continue) {
 		au_begin(eng);
-
-		player1 = apply_controls(eng, player1, map,
-				SDL_SCANCODE_A, SDL_SCANCODE_D, SDL_SCANCODE_W, SDL_SCANCODE_S, SDL_SCANCODE_SPACE);
-		player2 = apply_controls(eng, player2, map, SDL_SCANCODE_LEFT, 
-				SDL_SCANCODE_RIGHT, SDL_SCANCODE_UP, SDL_SCANCODE_DOWN, SDL_SCANCODE_PERIOD);
+		if(restart_timer > 0) {
+			restart_timer--;
+			if(restart_timer == 0) {
+				player1 = (Character) {{1, 1, 32, 32}, {0, 0}, {0, 0}, 0, 1};
+				player2 = (Character) {{500, 500, 32, 32}, {0, 0}, {0, 0}, 0, 1};
+			}
+		} else {
+			player1 = apply_controls(eng, player1, map,
+					SDL_SCANCODE_A, SDL_SCANCODE_D, SDL_SCANCODE_W, SDL_SCANCODE_S, SDL_SCANCODE_SPACE);
+			player2 = apply_controls(eng, player2, map, SDL_SCANCODE_LEFT, 
+					SDL_SCANCODE_RIGHT, SDL_SCANCODE_UP, SDL_SCANCODE_DOWN, SDL_SCANCODE_PERIOD);
+			if(au_geom_rect_overlaps_rect(player1.bounds, player2.bounds)) {
+				bool charging1 = player1.charge_time > charge_time / 2;
+				bool charging2 = player2.charge_time > charge_time / 2;
+				if(charging1 && charging2) {
+					//TODO: have the players bounce off each other
+				} else if(charging1) {
+					score1++;
+				} else if(charging2) {
+					score2++;
+				}
+				//Check if the round should restart
+				if(charging1 != charging2) {
+					restart_timer = 60;
+				}
+			}
+		}
 		//Draw code
 		au_draw_texture_rect(eng, player_tex, player1.bounds);
 		au_draw_texture_rect(eng, player_tex, player2.bounds);
