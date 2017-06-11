@@ -90,8 +90,8 @@ void game_loop(AU_Engine* eng) {
 	char win_buffer[14];
 
 	AU_Texture player_tex = au_load_texture(eng, "../player.png");
-	AU_Font* score_font = au_load_font(eng, 18, (AU_Color) { 1, 1, 1, 1 }, "../DejaVuSans.ttf");
-	AU_Font* result_font = au_load_font(eng, 36, (AU_Color) { 1, 1, 1, 1}, "../DejaVuSans.ttf");
+	AU_Font* score_font = au_load_font(eng, 18, AU_WHITE, "../DejaVuSans.ttf");
+	AU_Font* result_font = au_load_font(eng, 36, AU_WHITE, "../DejaVuSans.ttf");
 	AU_Tilemap map = au_tmap_init(800, 608, 32, 32);
 	au_tmap_set(map, 128, 128, 5);
 
