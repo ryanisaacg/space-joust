@@ -11,6 +11,8 @@ typedef struct {
 
 const int charge_time = 30;
 
+#define INT_STRING_LENGTH ((CHAR_BIT * sizeof(int) - 1) / 3 + 2)
+
 static Character apply_controls(AU_Engine* eng, Character player, AU_Tilemap map,
 		int left, int right, int up, int down, int charge) {
 
@@ -83,8 +85,10 @@ void game_loop(AU_Engine* eng) {
 	int score2 = 0;
 	int restart_timer = -1;
 
-	AU_Texture player_tex = au_load_texture(eng, "../player.png");
+	char buffer[INT_STRING_LENGTH];
 
+	AU_Texture player_tex = au_load_texture(eng, "../player.png");
+	AU_Font* font = au_load_font(eng, 18, (AU_Color) { 1, 1, 1, 1 }, "../DejaVuSans.ttf");
 	AU_Tilemap map = au_tmap_init(800, 608, 32, 32);
 	au_tmap_set(map, 128, 128, 5);
 
@@ -129,6 +133,12 @@ void game_loop(AU_Engine* eng) {
 				}
 			}
 		}
+
+		sprintf(buffer, "%d", score1);
+		au_draw_string(eng, font, buffer, 32, 0);
+		sprintf(buffer, "%d", score2);
+		au_draw_string(eng, font, buffer, 600, 0);
+
 		au_end(eng);
 	}
 }
