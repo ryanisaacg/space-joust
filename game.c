@@ -86,9 +86,12 @@ void game_loop(AU_Engine* eng) {
 	int restart_timer = -1;
 
 	char buffer[INT_STRING_LENGTH];
+	//Length to store PLAYER N WINS (plus a nulll terminator)
+	char win_buffer[14];
 
 	AU_Texture player_tex = au_load_texture(eng, "../player.png");
-	AU_Font* font = au_load_font(eng, 18, (AU_Color) { 1, 1, 1, 1 }, "../DejaVuSans.ttf");
+	AU_Font* score_font = au_load_font(eng, 18, (AU_Color) { 1, 1, 1, 1 }, "../DejaVuSans.ttf");
+	AU_Font* result_font = au_load_font(eng, 36, (AU_Color) { 1, 1, 1, 1}, "../DejaVuSans.ttf");
 	AU_Tilemap map = au_tmap_init(800, 608, 32, 32);
 	au_tmap_set(map, 128, 128, 5);
 
@@ -112,8 +115,10 @@ void game_loop(AU_Engine* eng) {
 					//TODO: have the players bounce off each other
 				} else if(charging1) {
 					score1++;
+					strcpy(win_buffer, "Player 1 wins");
 				} else if(charging2) {
 					score2++;
+					strcpy(win_buffer, "Player 2 wins");
 				}
 				//Check if the round should restart
 				if(charging1 != charging2) {
@@ -134,10 +139,14 @@ void game_loop(AU_Engine* eng) {
 			}
 		}
 
+		if(restart_timer > 0) {
+			au_draw_string(eng, result_font, win_buffer, 300, 64);
+		}
+
 		sprintf(buffer, "%d", score1);
-		au_draw_string(eng, font, buffer, 32, 0);
+		au_draw_string(eng, score_font, buffer, 32, 16);
 		sprintf(buffer, "%d", score2);
-		au_draw_string(eng, font, buffer, 600, 0);
+		au_draw_string(eng, score_font, buffer, 600, 16);
 
 		au_end(eng);
 	}
