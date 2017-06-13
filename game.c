@@ -76,6 +76,17 @@ static Character apply_controls(AU_Engine* eng, Character player, AU_Tilemap map
 	return player;
 }
 
+void draw_player(AU_Engine* eng, Character player, AU_TextureRegion region) {
+	AU_Sprite sprite = au_sprite_new(region);
+	sprite.transform.x = player.bounds.x;
+	sprite.transform.y = player.bounds.y;
+	sprite.transform.width = player.bounds.width;
+	sprite.transform.height = player.bounds.height;
+	sprite.transform.flip_x = player.facing == -1;
+	au_draw_sprite(eng, &sprite);
+}
+
+
 void game_loop(AU_Engine* eng) {
 
 	Character player1 = {{1, 1, 32, 32}, {0, 0}, {0, 0}, 0, 1};
@@ -128,8 +139,8 @@ void game_loop(AU_Engine* eng) {
 		}
 		//Draw code
 		AU_TextureRegion region = au_tex_region(player_tex);
-		au_draw_texture_rect(eng, region, player1.bounds);
-		au_draw_texture_rect(eng, region, player2.bounds);
+		draw_player(eng, player1, region);
+		draw_player(eng, player2, region);
 
 		for (int x = 0; x < 800; x += 32) {
 			for (int y = 0; y < 600; y += 32) {
