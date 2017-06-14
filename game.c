@@ -11,10 +11,10 @@ typedef struct {
 
 const int charge_time = 30;
 
-#define INT_STRING_LENGTH ((CHAR_BIT * sizeof(int) - 1) / 3 + 2)
+#define INT_STRING_LENGTH ((8 * sizeof(int) - 1) / 3 + 2)
 
 static Character apply_controls(AU_Engine* eng, Character player, AU_Tilemap map,
-		int left, int right, int up, int down, int charge) {
+		int left, int right, int up, int down, int charge, AU_ParticleEmitter *emitter) {
 
 	const float max_speed = 3;
 	const float accel = 0.5;
@@ -39,6 +39,11 @@ static Character apply_controls(AU_Engine* eng, Character player, AU_Tilemap map
 	}
 	if (eng->current_keys[charge] && player.charge_time <= 0) {
 		player.charge_time = charge_time;
+		emitter->velocity_min.x = abs(emitter->velocity_min.x) * -player.facing;
+		emitter->velocity_max.x = abs(emitter->velocity_max.x) * -player.facing;
+		emitter->top_left = (AU_Vector) { player.bounds.x, player.bounds.y };
+		emitter->bottom_right = (AU_Vector) { player.bounds.x + player.bounds.width, player.bounds.y + player.bounds.height };
+		au_add_particles(eng, emitter);
 	}
 
 	//Movement code
@@ -90,6 +95,16 @@ void game_loop(AU_Engine* eng) {
 	char win_buffer[14];
 
 	AU_Texture player_tex = au_load_texture(eng, "../player.png");
+	AU_Texture particle_tex = au_load_texture(eng, "../particle.png");
+	//Create the particle emitter
+	AU_ParticleEmitter emitter = au_particle_emitter_new((AU_TextureRegion[]) { au_tex_region(particle_tex) }, 1);
+	emitter.velocity_min = (AU_Vector) { 2, 0 };
+	emitter.velocity_max = (AU_Vector) { 8, 0 };
+	emitter.lifetime_min = 1;
+	emitter.lifetime_max = 15;
+	emitter.particle_min = 15;
+	emitter.particle_max = 30;
+
 	AU_Font* score_font = au_load_font(eng, 18, AU_WHITE, "../DejaVuSans.ttf");
 	AU_Font* result_font = au_load_font(eng, 36, AU_WHITE, "../DejaVuSans.ttf");
 	AU_Tilemap map = au_tmap_init(800, 608, 32, 32);
@@ -105,9 +120,9 @@ void game_loop(AU_Engine* eng) {
 			}
 		} else {
 			player1 = apply_controls(eng, player1, map,
-					SDL_SCANCODE_A, SDL_SCANCODE_D, SDL_SCANCODE_W, SDL_SCANCODE_S, SDL_SCANCODE_SPACE);
+					SDL_SCANCODE_A, SDL_SCANCODE_D, SDL_SCANCODE_W, SDL_SCANCODE_S, SDL_SCANCODE_SPACE, &emitter);
 			player2 = apply_controls(eng, player2, map, SDL_SCANCODE_LEFT, 
-					SDL_SCANCODE_RIGHT, SDL_SCANCODE_UP, SDL_SCANCODE_DOWN, SDL_SCANCODE_PERIOD);
+					SDL_SCANCODE_RIGHT, SDL_SCANCODE_UP, SDL_SCANCODE_DOWN, SDL_SCANCODE_PERIOD, &emitter);
 			if(au_geom_rect_overlaps_rect(player1.bounds, player2.bounds)) {
 				bool charging1 = player1.charge_time > charge_time / 2;
 				bool charging2 = player2.charge_time > charge_time / 2;
