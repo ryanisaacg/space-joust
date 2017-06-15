@@ -122,7 +122,7 @@ void game_loop(AU_Engine* eng) {
 	au_tmap_set(map, 128, 128, 5);
 
 	while (eng->should_continue) {
-		au_begin(eng);
+		au_begin(eng, AU_CYAN);
 		if(restart_timer > 0) {
 			restart_timer--;
 			if(restart_timer == 0) {
