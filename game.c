@@ -138,7 +138,18 @@ void game_loop(AU_Engine* eng) {
 				bool charging1 = player1.charge_time > charge_time / 2;
 				bool charging2 = player2.charge_time > charge_time / 2;
 				if(charging1 && charging2) {
-					//TODO: have the players bounce off each other
+					if(player1.charge_time > player2.charge_time) {
+						score1++;
+						strcpy(win_buffer, "Player 1 wins");
+						charging2 = false;
+					} else if(player1.charge_time < player2.charge_time) {
+						score2++;
+						strcpy(win_buffer, "Player 2 wins");
+						charging1 = false;
+					} else {
+						player1.speed.x = -10 * player1.facing;
+						player2.speed.x = -10 * player2.facing;
+					}
 				} else if(charging1) {
 					score1++;
 					strcpy(win_buffer, "Player 1 wins");
