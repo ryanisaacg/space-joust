@@ -85,8 +85,6 @@ void draw_player(AU_Engine* eng, Character player, AU_TextureRegion region) {
 	AU_Sprite sprite = au_sprite_new(region);
 	sprite.transform.x = player.bounds.x;
 	sprite.transform.y = player.bounds.y;
-	sprite.transform.width = player.bounds.width;
-	sprite.transform.height = player.bounds.height;
 	sprite.transform.flip_x = player.facing == -1;
 	au_draw_sprite(eng, &sprite);
 }
@@ -105,7 +103,9 @@ void game_loop(AU_Engine* eng) {
 	//Length to store PLAYER N WINS (plus a nulll terminator)
 	char win_buffer[14];
 
-	AU_Texture player_tex = au_load_texture(eng, "../player.png");
+	AU_Texture player1_tex = au_load_texture(eng, "../player-blue.png");
+	AU_Texture player2_tex = au_load_texture(eng, "../player-red.png");
+	AU_Texture block_tex = au_load_texture(eng, "../block.png");
 	AU_Texture particle_tex = au_load_texture(eng, "../particle.png");
 	//Create the particle emitter
 	AU_ParticleEmitter emitter = au_particle_emitter_new((AU_TextureRegion[]) { au_tex_region(particle_tex) }, 1);
@@ -164,14 +164,14 @@ void game_loop(AU_Engine* eng) {
 			}
 		}
 		//Draw code
-		AU_TextureRegion region = au_tex_region(player_tex);
-		draw_player(eng, player1, region);
-		draw_player(eng, player2, region);
+		draw_player(eng, player1, au_tex_region(player1_tex));
+		draw_player(eng, player2, au_tex_region(player2_tex));
 
+		AU_TextureRegion block_region = au_tex_region(block_tex);
 		for (int x = 0; x < 800; x += 32) {
 			for (int y = 0; y < 600; y += 32) {
 				if (au_tmap_get(map, x, y)) {
-					au_draw_texture(eng, region, x, y);
+					au_draw_texture(eng, block_region, x, y);
 				}
 			}
 		}
